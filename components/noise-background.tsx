@@ -1,5 +1,6 @@
 'use client';
-import Noise from './noise-3d';
+
+import Noise from './ui/noise-3d';
 
 export const NoiseBackground = () => {
   return (

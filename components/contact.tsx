@@ -8,7 +8,7 @@ import { Github, Linkedin, Mail, Send } from 'lucide-react';
 
 export function Contact() {
   return (
-    <section className='relative px-4 py-32'>
+    <section id='contact' className='relative px-4 py-32'>
       <div className='mx-auto max-w-4xl'>
         <h2
           className='bg-clip-text bg-linear-to-r from-primary via-secondary to-accent mb-16 font-bold text-transparent text-5xl md:text-6xl text-center'
@@ -21,7 +21,8 @@ export function Contact() {
           <div className='gap-12 grid md:grid-cols-2 mb-8'>
             <div className='space-y-6'>
               <a
-                href='mailto:seu@email.com'
+                target='_blank'
+                href='mailto:leosgarbi92@gmail.com'
                 className='group flex items-start gap-4 cursor-pointer'
               >
                 <div className='flex justify-center items-center bg-primary/20 group-hover:bg-primary/30 rounded-full w-12 h-12 transition-colors group-hover:animate-glow'>
@@ -31,12 +32,12 @@ export function Contact() {
                   <h3 className='mb-1 font-semibold text-foreground group-hover:text-primary text-lg transition-colors'>
                     Email
                   </h3>
-                  <p className='text-muted-foreground'>seu@email.com</p>
+                  <p className='text-muted-foreground'>leosgarbi92@gmail.com</p>
                 </div>
               </a>
 
               <a
-                href='https://linkedin.com/in/seu-perfil'
+                href='https://linkedin.com/in/leosgarbi'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='group flex items-start gap-4 cursor-pointer'
@@ -49,13 +50,13 @@ export function Contact() {
                     LinkedIn
                   </h3>
                   <p className='text-muted-foreground'>
-                    linkedin.com/in/seu-perfil
+                    linkedin.com/in/leosgarbi
                   </p>
                 </div>
               </a>
 
               <a
-                href='https://github.com/seu-usuario'
+                href='https://github.com/leosgarbi'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='group flex items-start gap-4 cursor-pointer'
@@ -67,9 +68,7 @@ export function Contact() {
                   <h3 className='mb-1 font-semibold text-foreground group-hover:text-accent text-lg transition-colors'>
                     GitHub
                   </h3>
-                  <p className='text-muted-foreground'>
-                    github.com/seu-usuario
-                  </p>
+                  <p className='text-muted-foreground'>github.com/leosgarbi</p>
                 </div>
               </a>
             </div>

@@ -13,9 +13,6 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: 'Léo Sgarbi',
-  description:
-    'Portfolio épico de desenvolvedor front-end e fotógrafo/videomaker profissional',
-  generator: 'v0.app',
 };
 
 export default function RootLayout({

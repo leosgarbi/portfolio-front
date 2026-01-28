@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ArrowDown, Github, Linkedin, Mail, Twitter } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export function Hero() {
@@ -48,44 +48,19 @@ export function Hero() {
             size='lg'
             className='group relative bg-primary hover:bg-primary/90 overflow-hidden text-primary-foreground'
           >
-            <span className='z-10 relative flex items-center gap-2'>
-              Ver Projetos
-              <ArrowDown className='w-4 h-4 transition-transform group-hover:translate-y-1' />
-            </span>
+            <a
+              href='#contact'
+              className='z-10 relative flex items-center gap-2'
+            >
+              Entre em Contato
+              {/* <ArrowDown className='w-4 h-4 transition-transform group-hover:translate-y-1' /> */}
+            </a>
             <span className='absolute inset-0 bg-linear-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity' />
           </Button>
-
-          <Button
-            size='lg'
-            variant='outline'
-            className='bg-transparent hover:bg-primary/10 border-primary/50 hover:border-primary glass-effect'
-          >
-            Entre em Contato
-          </Button>
         </div>
-
-        <div className='flex justify-center gap-6'>
-          {[
-            { icon: Github, href: '#', label: 'GitHub' },
-            { icon: Linkedin, href: '#', label: 'LinkedIn' },
-            { icon: Twitter, href: '#', label: 'Twitter' },
-            { icon: Mail, href: '#', label: 'Email' },
-          ].map((social, i) => (
-            <a
-              key={i}
-              href={social.href}
-              aria-label={social.label}
-              className='flex justify-center items-center hover:bg-primary/20 rounded-full w-12 h-12 hover:scale-110 transition-all hover:animate-glow duration-300 glass-effect'
-              style={{ animationDelay: `${i * 0.1}s` }}
-            >
-              <social.icon className='w-5 h-5 text-primary' />
-            </a>
-          ))}
+        <div className='bottom-36 left-1/2 absolute -translate-x-1/2 animate-bounce'>
+          <ArrowDown className='w-6 h-6 text-muted-foreground' />
         </div>
-      </div>
-
-      <div className='bottom-8 left-1/2 absolute -translate-x-1/2 animate-bounce'>
-        <ArrowDown className='w-6 h-6 text-muted-foreground' />
       </div>
     </section>
   );

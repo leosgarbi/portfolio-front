@@ -1,5 +1,4 @@
 import { About } from '@/components/about';
-import AuroraBackground from '@/components/aurora';
 import { Contact } from '@/components/contact';
 import { Hero } from '@/components/hero';
 import { Navigation } from '@/components/navigation';
@@ -12,7 +11,6 @@ export default function Page() {
     <main className='relative min-h-screen overflow-hidden'>
       <Navigation />
       <NoiseBackground />
-      <AuroraBackground />
       <Hero />
       <About />
       <Skills />

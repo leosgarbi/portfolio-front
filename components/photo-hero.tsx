@@ -31,10 +31,10 @@ export function PhotoHero() {
             className='bg-clip-text bg-linear-to-r from-amber-400 via-orange-500 to-pink-500 mb-6 font-bold text-transparent text-6xl md:text-8xl animate-glow'
             style={{ fontFamily: 'var(--font-orbitron)' }}
           >
-            VISUAL STORYTELLER
+            HISTÓRIAS EM IMAGENS
           </h1>
           <h2 className='mb-8 font-bold text-foreground/90 text-4xl md:text-6xl'>
-            Photography & Videography
+            Fotógrafo & Cinegrafista
           </h2>
         </div>
 

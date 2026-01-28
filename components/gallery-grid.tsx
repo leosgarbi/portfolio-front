@@ -5,9 +5,6 @@ import { X, ZoomIn } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
-/* =========================
- * Tipagens
- * ========================= */
 type GalleryImage = {
   id: string;
   src: string;

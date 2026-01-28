@@ -29,9 +29,12 @@ export function Navigation() {
       <div className='flex justify-between items-center mx-auto px-4 py-4 max-w-7xl'>
         <Link href='/' className='group flex items-center gap-2'>
           <div className='flex justify-center items-center bg-linear-to-r from-primary to-secondary rounded-full w-10 h-10 group-hover:scale-110 transition-transform'>
-            <span className='font-bold text-white text-xl'>P</span>
+            <img
+              src={'https://avatars.githubusercontent.com/u/124069013?v=4'}
+              className='rounded-full w-9 h-9'
+            />
           </div>
-          <span className='font-bold text-foreground text-xl'>Portfolio</span>
+          <span className='font-bold text-foreground text-xl'>Léo Sgarbi</span>
         </Link>
 
         {/* Desktop Navigation */}

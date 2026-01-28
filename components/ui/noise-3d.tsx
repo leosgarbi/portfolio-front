@@ -1,6 +1,5 @@
 import type React from 'react';
 import { useEffect, useRef } from 'react';
-import './Noise.css';
 
 interface NoiseProps {
   patternSize?: number;

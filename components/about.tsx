@@ -32,14 +32,14 @@ export function About() {
   }, []);
 
   const stats = [
-    { icon: Code2, label: 'Projetos', value: '50+', color: 'text-primary' },
+    { icon: Code2, label: 'Projetos', value: '8+', color: 'text-primary' },
     {
       icon: Rocket,
       label: 'Tecnologias',
       value: '30+',
       color: 'text-secondary',
     },
-    { icon: Sparkles, label: 'Anos de XP', value: '8+', color: 'text-accent' },
+    { icon: Sparkles, label: 'Anos de XP', value: '3+', color: 'text-accent' },
     { icon: Zap, label: 'Café/dia', value: '∞', color: 'text-chart-4' },
   ];
 
@@ -57,30 +57,29 @@ export function About() {
           <div className='items-center gap-12 grid md:grid-cols-2 mb-20'>
             <div className='space-y-6'>
               <p className='text-muted-foreground text-lg leading-relaxed'>
-                Desenvolvedor front-end sênior apaixonado por criar experiências
-                web que combinam
+                Desenvolvedor front-end inspirado a criar experiências web que
+                combinam
                 <span className='font-semibold text-primary'>
                   {' '}
-                  design impecável
+                  design funcional
                 </span>{' '}
                 com
                 <span className='font-semibold text-secondary'>
                   {' '}
-                  performance excepcional
+                  performance
                 </span>
                 .
               </p>
 
               <p className='text-muted-foreground text-lg leading-relaxed'>
-                Especializado em React, Next.js, TypeScript e animações 3D com
-                Three.js. Transformo ideias complexas em interfaces intuitivas e
-                memoráveis.
+                Especializado em React, Next.js, TypeScript. Transformo ideias
+                complexas em interfaces intuitivas e memoráveis.
               </p>
 
               <p className='text-muted-foreground text-lg leading-relaxed'>
-                Quando não estou codificando, você me encontra explorando novas
-                tecnologias, contribuindo em projetos open source ou tomando meu
-                café infinito ☕
+                Quando não estou escrevendo código, estou contando histórias
+                através da fotografia e do vídeo, duas formas diferentes de
+                criar experiências.
               </p>
             </div>
 
