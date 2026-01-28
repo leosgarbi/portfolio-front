@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export function PhotoHero() {
@@ -27,7 +28,7 @@ export function PhotoHero() {
           }}
         >
           <h1
-            className='bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 mb-6 font-bold text-transparent text-6xl md:text-8xl animate-glow'
+            className='bg-clip-text bg-linear-to-r from-amber-400 via-orange-500 to-pink-500 mb-6 font-bold text-transparent text-6xl md:text-8xl animate-glow'
             style={{ fontFamily: 'var(--font-orbitron)' }}
           >
             VISUAL STORYTELLER
@@ -41,6 +42,10 @@ export function PhotoHero() {
           Capturando momentos únicos e criando narrativas visuais que inspiram e
           emocionam
         </p>
+
+        <div className='bottom-8 left-1/2 absolute -translate-x-1/2 animate-bounce'>
+          <ArrowDown className='w-6 h-6 text-muted-foreground' />
+        </div>
       </div>
     </section>
   );

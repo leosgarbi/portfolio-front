@@ -1,116 +1,215 @@
-"use client"
+import { Color, Mesh, Program, Renderer, Triangle } from 'ogl';
+import { useEffect, useRef } from 'react';
 
-import { Canvas, useFrame } from "@react-three/fiber"
-import { Points, PointMaterial } from "@react-three/drei"
-import { useRef, useMemo } from "react"
-import * as THREE from "three"
+import './Aurora.css';
 
-function GalaxyParticles() {
-  const ref = useRef<THREE.Points>(null)
+const VERT = `#version 300 es
+in vec2 position;
+void main() {
+  gl_Position = vec4(position, 0.0, 1.0);
+}
+`;
 
-  const particlesCount = 3000
-  const positions = useMemo(() => {
-    const positions = new Float32Array(particlesCount * 3)
-    const colors = new Float32Array(particlesCount * 3)
+const FRAG = `#version 300 es
+precision highp float;
 
-    for (let i = 0; i < particlesCount; i++) {
-      const i3 = i * 3
+uniform float uTime;
+uniform float uAmplitude;
+uniform vec3 uColorStops[3];
+uniform vec2 uResolution;
+uniform float uBlend;
 
-      const radius = Math.random() * 18
-      const spinAngle = radius * 0.4
-      const branchAngle = ((i % 3) / 3) * Math.PI * 2
+out vec4 fragColor;
 
-      const randomX = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 0.6
-      const randomY = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 0.3
-      const randomZ = Math.pow(Math.random(), 3) * (Math.random() < 0.5 ? 1 : -1) * 0.6
-
-      positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX
-      positions[i3 + 1] = randomY
-      positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ
-
-      const mixedColor = new THREE.Color()
-      const innerColor = new THREE.Color("#7c3aed")
-      const outerColor = new THREE.Color("#0891b2")
-      mixedColor.lerpColors(innerColor, outerColor, radius / 18)
-
-      colors[i3] = mixedColor.r
-      colors[i3 + 1] = mixedColor.g
-      colors[i3 + 2] = mixedColor.b
-    }
-
-    return { positions, colors }
-  }, [])
-
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * 0.03
-      ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.08) * 0.05
-    }
-  })
-
-  return (
-    <Points ref={ref} positions={positions.positions} colors={positions.colors}>
-      <PointMaterial
-        transparent
-        vertexColors
-        size={0.04}
-        sizeAttenuation={true}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-        opacity={0.6}
-      />
-    </Points>
-  )
+vec3 permute(vec3 x) {
+  return mod(((x * 34.0) + 1.0) * x, 289.0);
 }
 
-function StarField() {
-  const ref = useRef<THREE.Points>(null)
+float snoise(vec2 v){
+  const vec4 C = vec4(
+      0.211324865405187, 0.366025403784439,
+      -0.577350269189626, 0.024390243902439
+  );
+  vec2 i  = floor(v + dot(v, C.yy));
+  vec2 x0 = v - i + dot(i, C.xx);
+  vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+  vec4 x12 = x0.xyxy + C.xxzz;
+  x12.xy -= i1;
+  i = mod(i, 289.0);
 
-  const starsCount = 1500
-  const positions = useMemo(() => {
-    const positions = new Float32Array(starsCount * 3)
+  vec3 p = permute(
+      permute(i.y + vec3(0.0, i1.y, 1.0))
+    + i.x + vec3(0.0, i1.x, 1.0)
+  );
 
-    for (let i = 0; i < starsCount; i++) {
-      const i3 = i * 3
-      positions[i3] = (Math.random() - 0.5) * 60
-      positions[i3 + 1] = (Math.random() - 0.5) * 60
-      positions[i3 + 2] = (Math.random() - 0.5) * 60
-    }
+  vec3 m = max(
+      0.5 - vec3(
+          dot(x0, x0),
+          dot(x12.xy, x12.xy),
+          dot(x12.zw, x12.zw)
+      ),
+      0.0
+  );
+  m = m * m;
+  m = m * m;
 
-    return positions
-  }, [])
+  vec3 x = 2.0 * fract(p * C.www) - 1.0;
+  vec3 h = abs(x) - 0.5;
+  vec3 ox = floor(x + 0.5);
+  vec3 a0 = x - ox;
+  m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
 
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * 0.01
-    }
-  })
-
-  return (
-    <Points ref={ref} positions={positions}>
-      <PointMaterial
-        transparent
-        color="#ffffff"
-        size={0.03}
-        sizeAttenuation={true}
-        depthWrite={false}
-        opacity={0.4}
-        blending={THREE.AdditiveBlending}
-      />
-    </Points>
-  )
+  vec3 g;
+  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+  return 130.0 * dot(m, g);
 }
 
-export function Background3D() {
-  return (
-    <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#030308] via-[#0a0a12] to-[#030308]">
-      <Canvas camera={{ position: [0, 5, 12], fov: 75 }}>
-        <ambientLight intensity={0.1} />
-        <pointLight position={[0, 0, 0]} intensity={1} color="#7c3aed" />
+struct ColorStop {
+  vec3 color;
+  float position;
+};
 
-        <StarField />
-        <GalaxyParticles />
-      </Canvas>
-    </div>
-  )
+#define COLOR_RAMP(colors, factor, finalColor) {              \
+  int index = 0;                                            \
+  for (int i = 0; i < 2; i++) {                               \
+     ColorStop currentColor = colors[i];                    \
+     bool isInBetween = currentColor.position <= factor;    \
+     index = int(mix(float(index), float(i), float(isInBetween))); \
+  }                                                         \
+  ColorStop currentColor = colors[index];                   \
+  ColorStop nextColor = colors[index + 1];                  \
+  float range = nextColor.position - currentColor.position; \
+  float lerpFactor = (factor - currentColor.position) / range; \
+  finalColor = mix(currentColor.color, nextColor.color, lerpFactor); \
+}
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / uResolution;
+
+  ColorStop colors[3];
+  colors[0] = ColorStop(uColorStops[0], 0.0);
+  colors[1] = ColorStop(uColorStops[1], 0.5);
+  colors[2] = ColorStop(uColorStops[2], 1.0);
+
+  vec3 rampColor;
+  COLOR_RAMP(colors, uv.x, rampColor);
+
+  float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25)) * 0.5 * uAmplitude;
+  height = exp(height);
+  height = (uv.y * 2.0 - height + 0.2);
+  float intensity = 0.6 * height;
+
+  float midPoint = 0.20;
+  float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
+
+  vec3 auroraColor = intensity * rampColor;
+
+  fragColor = vec4(auroraColor * auroraAlpha, auroraAlpha);
+}
+`;
+
+interface AuroraProps {
+  colorStops?: string[];
+  amplitude?: number;
+  blend?: number;
+  time?: number;
+  speed?: number;
+}
+
+export default function Aurora(props: AuroraProps) {
+  const {
+    colorStops = ['#5227FF', '#7cff67', '#5227FF'],
+    amplitude = 1.0,
+    blend = 0.5,
+  } = props;
+  const propsRef = useRef<AuroraProps>(props);
+  propsRef.current = props;
+
+  const ctnDom = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctn = ctnDom.current;
+    if (!ctn) return;
+
+    const renderer = new Renderer({
+      alpha: true,
+      premultipliedAlpha: true,
+      antialias: true,
+    });
+    const gl = renderer.gl;
+    gl.clearColor(0, 0, 0, 0);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.canvas.style.backgroundColor = 'transparent';
+
+    let program: Program | undefined;
+
+    function resize() {
+      if (!ctn) return;
+      const width = ctn.offsetWidth;
+      const height = ctn.offsetHeight;
+      renderer.setSize(width, height);
+      if (program) {
+        program.uniforms.uResolution.value = [width, height];
+      }
+    }
+    window.addEventListener('resize', resize);
+
+    const geometry = new Triangle(gl);
+    if (geometry.attributes.uv) {
+      delete geometry.attributes.uv;
+    }
+
+    const colorStopsArray = colorStops.map((hex) => {
+      const c = new Color(hex);
+      return [c.r, c.g, c.b];
+    });
+
+    program = new Program(gl, {
+      vertex: VERT,
+      fragment: FRAG,
+      uniforms: {
+        uTime: { value: 0 },
+        uAmplitude: { value: amplitude },
+        uColorStops: { value: colorStopsArray },
+        uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
+        uBlend: { value: blend },
+      },
+    });
+
+    const mesh = new Mesh(gl, { geometry, program });
+    ctn.appendChild(gl.canvas);
+
+    let animateId = 0;
+    const update = (t: number) => {
+      animateId = requestAnimationFrame(update);
+      const { time = t * 0.01, speed = 1.0 } = propsRef.current;
+      if (program) {
+        program.uniforms.uTime.value = time * speed * 0.1;
+        program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? 1.0;
+        program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
+        const stops = propsRef.current.colorStops ?? colorStops;
+        program.uniforms.uColorStops.value = stops.map((hex: string) => {
+          const c = new Color(hex);
+          return [c.r, c.g, c.b];
+        });
+        renderer.render({ scene: mesh });
+      }
+    };
+    animateId = requestAnimationFrame(update);
+
+    resize();
+
+    return () => {
+      cancelAnimationFrame(animateId);
+      window.removeEventListener('resize', resize);
+      if (ctn && gl.canvas.parentNode === ctn) {
+        ctn.removeChild(gl.canvas);
+      }
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+    };
+  }, [amplitude]);
+
+  return <div ref={ctnDom} className='aurora-container' />;
 }

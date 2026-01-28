@@ -1,115 +1,161 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { X, ZoomIn } from "lucide-react"
+import { Button } from '@/components/ui/button';
+import { X, ZoomIn } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
-const galleries = [
+/* =========================
+ * Tipagens
+ * ========================= */
+type GalleryImage = {
+  id: string;
+  src: string;
+  alt: string;
+};
+
+type Gallery = {
+  id: string;
+  title: string;
+  description: string;
+  images: GalleryImage[];
+};
+
+const galleries: Gallery[] = [
   {
-    id: "portrait",
-    title: "Retratos",
-    description: "Capturando a essência humana",
-    color: "from-purple-500 to-pink-500",
-    images: Array.from({ length: 6 }, (_, i) => ({
-      src: `/placeholder.svg?height=600&width=400&query=professional+portrait+photography+${i + 1}`,
-      alt: `Retrato ${i + 1}`,
-    })),
+    id: 'portrait',
+    title: 'Retratos',
+    description: 'Capturando a essência humana',
+    images: [
+      {
+        id: 'portrait-1',
+        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/554992608_25032804689682255_9177703638228419998_n.jpg',
+        alt: 'Retrato feminino em luz natural',
+      },
+      {
+        id: 'portrait-2',
+        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/catedral_cwb.jpg',
+        alt: 'Retrato masculino em estúdio',
+      },
+      {
+        id: 'portrait-3',
+        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/portrait_ar.jpg',
+        alt: 'Retrato em preto e branco',
+      },
+    ],
   },
   {
-    id: "landscape",
-    title: "Paisagens",
-    description: "A beleza natural em pixels",
-    color: "from-green-500 to-blue-500",
-    images: Array.from({ length: 6 }, (_, i) => ({
-      src: `/placeholder.svg?height=400&width=600&query=stunning+landscape+photography+${i + 1}`,
-      alt: `Paisagem ${i + 1}`,
-    })),
+    id: 'landscape',
+    title: 'Paisagens',
+    description: 'A beleza natural em pixels',
+    images: [
+      {
+        id: 'landscape-1',
+        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/raining_cwb.jpg',
+        alt: 'Montanhas ao pôr do sol',
+      },
+      {
+        id: 'landscape-2',
+        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/sun_portrait.jpg',
+        alt: 'Lago com reflexo',
+      },
+    ],
   },
   {
-    id: "urban",
-    title: "Urbano",
-    description: "A vida nas cidades",
-    color: "from-orange-500 to-red-500",
-    images: Array.from({ length: 6 }, (_, i) => ({
-      src: `/placeholder.svg?height=600&width=600&query=urban+street+photography+${i + 1}`,
-      alt: `Urbano ${i + 1}`,
-    })),
+    id: 'urban',
+    title: 'Urbano',
+    description: 'A vida nas cidades',
+    images: [
+      {
+        id: 'urban-1',
+        src: 'https://placehold.co/600x400?text=Urban+1',
+        alt: 'Rua movimentada à noite',
+      },
+      {
+        id: 'urban-2',
+        src: 'https://placehold.co/600x400?text=Urban+2',
+        alt: 'Arquitetura moderna',
+      },
+    ],
   },
-  {
-    id: "events",
-    title: "Eventos",
-    description: "Momentos inesquecíveis",
-    color: "from-cyan-500 to-purple-500",
-    images: Array.from({ length: 6 }, (_, i) => ({
-      src: `/placeholder.svg?height=500&width=600&query=event+photography+${i + 1}`,
-      alt: `Evento ${i + 1}`,
-    })),
-  },
-]
+];
 
 export function GalleryGrid() {
-  const [activeGallery, setActiveGallery] = useState("portrait")
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [activeGallery, setActiveGallery] = useState<string>('portrait');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const currentGallery = galleries.find((g) => g.id === activeGallery)!
+  const currentGallery = galleries.find(
+    (gallery) => gallery.id === activeGallery,
+  );
+
+  if (!currentGallery) return null;
 
   return (
-    <section className="relative py-20 px-4">
-      <div className="max-w-7xl mx-auto">
+    <section className='relative px-4 py-20'>
+      <div className='mx-auto max-w-7xl'>
         <h2
-          className="text-5xl md:text-6xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
-          style={{ fontFamily: "var(--font-orbitron)" }}
+          className='bg-clip-text bg-linear-to-r from-primary to-secondary mb-4 font-bold text-transparent text-5xl md:text-6xl text-center'
+          style={{ fontFamily: 'var(--font-orbitron)' }}
         >
           GALERIAS
         </h2>
-        <p className="text-center text-muted-foreground mb-12 text-lg">Explore diferentes universos visuais</p>
 
-        {/* Gallery Tabs */}
-        <div className="flex flex-wrap gap-4 justify-center mb-16">
+        <p className='mb-12 text-muted-foreground text-lg text-center'>
+          Explore diferentes universos visuais
+        </p>
+
+        {/* Tabs */}
+        <div className='flex flex-wrap justify-center gap-4 mb-16'>
           {galleries.map((gallery) => (
             <Button
               key={gallery.id}
+              size='lg'
               onClick={() => setActiveGallery(gallery.id)}
               className={`group relative overflow-hidden ${
-                activeGallery === gallery.id ? "bg-gradient-to-r " + gallery.color : "glass-effect hover:bg-primary/10"
+                activeGallery === gallery.id
+                  ? `bg-linear-to-r from-primary to-secondary text-white`
+                  : 'glass-effect hover:bg-primary/10'
               }`}
-              size="lg"
             >
-              <span className="relative z-10">{gallery.title}</span>
+              <span className='z-10 relative'>{gallery.title}</span>
+
               {activeGallery === gallery.id && (
-                <span className="absolute inset-0 bg-gradient-to-r opacity-20 group-hover:opacity-30 transition-opacity" />
+                <span className='absolute inset-0 bg-linear-to-r opacity-20 group-hover:opacity-30 transition-opacity' />
               )}
             </Button>
           ))}
         </div>
 
-        {/* Gallery Description */}
-        <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold mb-2">{currentGallery.title}</h3>
-          <p className="text-muted-foreground text-lg">{currentGallery.description}</p>
+        {/* Descrição */}
+        <div className='mb-12 text-center'>
+          <h3 className='mb-2 font-bold text-3xl'>{currentGallery.title}</h3>
+          <p className='text-muted-foreground text-lg'>
+            {currentGallery.description}
+          </p>
         </div>
 
-        {/* Image Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentGallery.images.map((image, i) => (
+        {/* Grid de imagens */}
+        <div className='gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+          {currentGallery.images.map((image, index) => (
             <div
-              key={i}
-              className="group relative aspect-[4/3] rounded-2xl overflow-hidden glass-effect cursor-pointer hover:scale-105 transition-all duration-300"
+              key={image.id}
+              className='group relative rounded-2xl aspect-4/3 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer glass-effect'
               onClick={() => setSelectedImage(image.src)}
-              style={{ animationDelay: `${i * 0.05}s` }}
+              style={{ animationDelay: `${index * 0.05}s` }}
             >
               <Image
-                src={image.src || "/placeholder.svg"}
+                src={image.src}
                 alt={image.alt}
                 fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                className='object-cover group-hover:scale-110 transition-transform duration-500'
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                <ZoomIn className="w-8 h-8 text-white" />
+
+              <div className='absolute inset-0 flex justify-center items-end bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 pb-6 transition-opacity duration-300'>
+                <ZoomIn className='w-8 h-8 text-white' />
               </div>
+
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${currentGallery.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
+                className={`absolute inset-0 bg-linear-to-br from-black to-gray-800 opacity-0 transition-opacity duration-300 group-hover:opacity-20`}
               />
             </div>
           ))}
@@ -119,21 +165,27 @@ export function GalleryGrid() {
       {/* Lightbox */}
       {selectedImage && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 animate-in fade-in"
+          className='z-50 fixed inset-0 flex justify-center items-center bg-black/95 p-4 animate-in fade-in'
           onClick={() => setSelectedImage(null)}
         >
           <button
-            className="absolute top-4 right-4 w-12 h-12 rounded-full glass-effect flex items-center justify-center hover:bg-white/20 transition-colors"
+            className='top-4 right-4 absolute flex justify-center items-center hover:bg-white/20 rounded-full w-12 h-12 transition-colors glass-effect'
+            aria-label='Fechar'
             onClick={() => setSelectedImage(null)}
-            aria-label="Close"
           >
-            <X className="w-6 h-6 text-white" />
+            <X className='w-6 h-6 text-white' />
           </button>
-          <div className="relative max-w-6xl max-h-[90vh] w-full h-full">
-            <Image src={selectedImage || "/placeholder.svg"} alt="Selected image" fill className="object-contain" />
+
+          <div className='relative w-full max-w-6xl h-full max-h-[90vh]'>
+            <Image
+              src={selectedImage}
+              alt='Imagem selecionada'
+              fill
+              className='object-contain'
+            />
           </div>
         </div>
       )}
     </section>
-  )
+  );
 }

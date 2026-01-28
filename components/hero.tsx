@@ -1,90 +1,92 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { ArrowDown, Github, Linkedin, Mail, Twitter } from "lucide-react"
+import { Button } from '@/components/ui/button';
+import { ArrowDown, Github, Linkedin, Mail, Twitter } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth - 0.5) * 20,
         y: (e.clientY / window.innerHeight - 0.5) * 20,
-      })
-    }
+      });
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4">
-      <div className="max-w-7xl w-full mx-auto text-center">
+    <section className='relative flex justify-center items-center px-4 min-h-screen'>
+      <div className='mx-auto w-full max-w-7xl text-center'>
         <div
-          className="transition-transform duration-300 ease-out"
+          className='transition-transform duration-300 ease-out'
           style={{
             transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
           }}
         >
           <h1
-            className="text-7xl md:text-9xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent animate-glow"
-            style={{ fontFamily: "var(--font-orbitron)" }}
+            className='bg-clip-text bg-linear-to-r from-primary via-secondary to-accent mb-6 font-bold text-transparent text-7xl md:text-9xl animate-glow'
+            style={{ fontFamily: 'var(--font-orbitron)' }}
           >
             FRONT-END
           </h1>
-          <h2 className="text-5xl md:text-7xl font-bold mb-8 text-foreground/90">{"<Developer />"}</h2>
+          <h2 className='mb-8 font-bold text-foreground/90 text-5xl md:text-7xl'>
+            {'<Developer />'}
+          </h2>
         </div>
 
-        <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
+        <p className='mx-auto mb-12 max-w-2xl text-muted-foreground text-xl md:text-2xl leading-relaxed'>
           Criando experiências web únicas e interativas com tecnologias modernas
         </p>
 
-        <div className="flex gap-4 justify-center mb-16 flex-wrap">
+        <div className='flex flex-wrap justify-center gap-4 mb-16'>
           <Button
-            size="lg"
-            className="group relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground"
+            size='lg'
+            className='group relative bg-primary hover:bg-primary/90 overflow-hidden text-primary-foreground'
           >
-            <span className="relative z-10 flex items-center gap-2">
+            <span className='z-10 relative flex items-center gap-2'>
               Ver Projetos
-              <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+              <ArrowDown className='w-4 h-4 transition-transform group-hover:translate-y-1' />
             </span>
-            <span className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className='absolute inset-0 bg-linear-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity' />
           </Button>
 
           <Button
-            size="lg"
-            variant="outline"
-            className="glass-effect border-primary/50 hover:border-primary hover:bg-primary/10 bg-transparent"
+            size='lg'
+            variant='outline'
+            className='bg-transparent hover:bg-primary/10 border-primary/50 hover:border-primary glass-effect'
           >
             Entre em Contato
           </Button>
         </div>
 
-        <div className="flex gap-6 justify-center">
+        <div className='flex justify-center gap-6'>
           {[
-            { icon: Github, href: "#", label: "GitHub" },
-            { icon: Linkedin, href: "#", label: "LinkedIn" },
-            { icon: Twitter, href: "#", label: "Twitter" },
-            { icon: Mail, href: "#", label: "Email" },
+            { icon: Github, href: '#', label: 'GitHub' },
+            { icon: Linkedin, href: '#', label: 'LinkedIn' },
+            { icon: Twitter, href: '#', label: 'Twitter' },
+            { icon: Mail, href: '#', label: 'Email' },
           ].map((social, i) => (
             <a
               key={i}
               href={social.href}
               aria-label={social.label}
-              className="w-12 h-12 rounded-full glass-effect flex items-center justify-center hover:bg-primary/20 hover:scale-110 transition-all duration-300 hover:animate-glow"
+              className='flex justify-center items-center hover:bg-primary/20 rounded-full w-12 h-12 hover:scale-110 transition-all hover:animate-glow duration-300 glass-effect'
               style={{ animationDelay: `${i * 0.1}s` }}
             >
-              <social.icon className="w-5 h-5 text-primary" />
+              <social.icon className='w-5 h-5 text-primary' />
             </a>
           ))}
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <ArrowDown className="w-6 h-6 text-muted-foreground" />
+      <div className='bottom-8 left-1/2 absolute -translate-x-1/2 animate-bounce'>
+        <ArrowDown className='w-6 h-6 text-muted-foreground' />
       </div>
     </section>
-  )
+  );
 }

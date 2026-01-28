@@ -1,21 +1,23 @@
-import { Hero } from "@/components/hero"
-import { About } from "@/components/about"
-import { Skills } from "@/components/skills"
-import { Projects } from "@/components/projects"
-import { Contact } from "@/components/contact"
-import { Background3D } from "@/components/background-3d"
-import { Navigation } from "@/components/navigation"
+import { About } from '@/components/about';
+import AuroraBackground from '@/components/aurora';
+import { Contact } from '@/components/contact';
+import { Hero } from '@/components/hero';
+import { Navigation } from '@/components/navigation';
+import NoiseBackground from '@/components/noise-background';
+import { Projects } from '@/components/projects';
+import { Skills } from '@/components/skills';
 
 export default function Page() {
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      <Background3D />
+    <main className='relative min-h-screen overflow-hidden'>
       <Navigation />
+      <NoiseBackground />
+      <AuroraBackground />
       <Hero />
       <About />
       <Skills />
       <Projects />
       <Contact />
     </main>
-  )
+  );
 }
