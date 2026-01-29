@@ -58,7 +58,7 @@ export function Hero() {
             <span className='absolute inset-0 bg-linear-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity' />
           </Button>
         </div>
-        <div className='bottom-36 left-1/2 absolute -translate-x-1/2 animate-bounce'>
+        <div className='bottom-8 left-1/2 absolute -translate-x-1/2 animate-bounce'>
           <ArrowDown className='w-6 h-6 text-muted-foreground' />
         </div>
       </div>
