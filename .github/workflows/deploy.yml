@@ -29,13 +29,7 @@ jobs:
         run: yarn install --frozen-lockfile --ignore-engines
 
       - name: Run ESLint
-        run: |
-          if yarn run --non-interactive eslint --version 2>/dev/null; then
-            echo "✅ ESLint found, running..."
-            yarn lint
-          else
-            echo "⚠️ ESLint not configured, skipping..."
-          fi
+        run: yarn lint
 
       - name: Type Check
         run: npx tsc --noEmit
