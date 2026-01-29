@@ -5,18 +5,70 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Github, Linkedin, Mail, Send } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+declare global {
+  interface Window {
+    turnstile: {
+      render: (selector: string, options: any) => string;
+      reset: (widgetId?: string) => void;
+      getResponse: (widgetId?: string) => string | undefined;
+    };
+  }
+}
 
 export function Contact() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [turnstileReady, setTurnstileReady] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const turnstileRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      if (window.turnstile) {
+        setTimeout(() => {
+          const widgetId = window.turnstile.render('#cf-turnstile', {
+            sitekey: process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY,
+            theme: 'dark',
+          });
+          turnstileRef.current = widgetId;
+          setTurnstileReady(true);
+        }, 100);
+      }
+    };
+    document.head.appendChild(script);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    // Prevenir múltiplos envios
+    if (submitted) {
+      setError(
+        'Você já enviou um formulário. Aguarde antes de enviar novamente.',
+      );
+      return;
+    }
+
+    // Verificar token do Turnstile
+    const token = window.turnstile?.getResponse(
+      turnstileRef.current || undefined,
+    );
+    if (!token) {
+      setError('Por favor, complete a verificação de segurança.');
+      return;
+    }
+
     setLoading(true);
     setSuccess(false);
-    setError(false);
+    setError(null);
 
     const formData = new FormData(e.currentTarget);
 
@@ -24,6 +76,8 @@ export function Contact() {
       name: formData.get('name'),
       email: formData.get('email'),
       message: formData.get('message'),
+      honeypot: formData.get('website'),
+      turnstileToken: token,
     };
 
     try {
@@ -33,12 +87,31 @@ export function Contact() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Erro ao enviar mensagem');
+        setSuccess(false);
+        return;
+      }
 
       setSuccess(true);
+      setError(null);
+      setSubmitted(true);
       e.currentTarget.reset();
-    } catch {
-      setError(true);
+
+      // Reset Turnstile
+      if (turnstileRef.current && window.turnstile) {
+        window.turnstile.reset(turnstileRef.current);
+      }
+
+      // Permitir novo envio após 5 minutos
+      setTimeout(() => setSubmitted(false), 5 * 60 * 1000);
+    } catch (err) {
+      setError(
+        'Erro ao processar sua mensagem. Verifique sua conexão e tente novamente.',
+      );
+      setSuccess(false);
     } finally {
       setLoading(false);
     }
@@ -112,11 +185,21 @@ export function Contact() {
             </div>
 
             {/* FORM */}
-            <form onSubmit={handleSubmit} className='space-y-4'>
+            <form ref={formRef} onSubmit={handleSubmit} className='space-y-4'>
+              {/* Honeypot field (invisible para usuários, roda bots) */}
+              <input
+                type='text'
+                name='website'
+                style={{ display: 'none' }}
+                tabIndex={-1}
+                autoComplete='off'
+              />
+
               <Input
                 name='name'
                 placeholder='Seu nome'
                 required
+                disabled={submitted || loading}
                 className='bg-card/50 border-primary/30 focus:border-primary glass-effect'
               />
               <Input
@@ -124,6 +207,7 @@ export function Contact() {
                 type='email'
                 placeholder='Seu email'
                 required
+                disabled={submitted || loading}
                 className='bg-card/50 border-primary/30 focus:border-primary glass-effect'
               />
               <Textarea
@@ -131,28 +215,46 @@ export function Contact() {
                 placeholder='Sua mensagem'
                 rows={4}
                 required
+                disabled={submitted || loading}
                 className='bg-card/50 border-primary/30 focus:border-primary resize-none glass-effect'
               />
+
+              {/* Cloudflare Turnstile */}
+              <div id='cf-turnstile' className='flex justify-center my-4' />
 
               <Button
                 type='submit'
                 size='lg'
-                disabled={loading}
+                disabled={loading || submitted}
                 className='group bg-linear-to-r from-primary via-secondary to-accent hover:opacity-90 w-full text-primary-foreground'
               >
                 <Send className='mr-2 w-4 h-4 transition-transform group-hover:translate-x-1' />
-                {loading ? 'Enviando...' : 'Enviar Mensagem'}
+                {loading
+                  ? 'Enviando...'
+                  : submitted
+                    ? 'Mensagem enviada! ✓'
+                    : 'Enviar Mensagem'}
               </Button>
 
-              {success && (
-                <p className='pt-2 text-green-500 text-sm'>
-                  Mensagem enviada com sucesso!
-                </p>
+              {success && !error && (
+                <div className='bg-green-500/10 p-3 border border-green-500/30 rounded'>
+                  <p className='text-green-600 dark:text-green-400 text-sm'>
+                    ✓ Mensagem enviada com sucesso! Obrigado pelo contato.
+                  </p>
+                </div>
               )}
 
               {error && (
-                <p className='pt-2 text-red-500 text-sm'>
-                  Ocorreu um erro ao enviar. Tente novamente.
+                <div className='bg-red-500/10 p-3 border border-red-500/30 rounded'>
+                  <p className='text-red-600 dark:text-red-400 text-sm'>
+                    {error}
+                  </p>
+                </div>
+              )}
+
+              {submitted && (
+                <p className='pt-2 text-muted-foreground text-xs text-center'>
+                  Você pode enviar outro formulário em 5 minutos
                 </p>
               )}
             </form>
