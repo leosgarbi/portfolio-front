@@ -7,9 +7,10 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: # Permite trigger manual
 
 jobs:
+  # Job 1: Lint e validações
   lint:
     name: Lint e Validações
     runs-on: ubuntu-latest
@@ -21,11 +22,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-engines
 
       - name: Run ESLint
         run: yarn lint
@@ -33,8 +34,9 @@ jobs:
 
       - name: Type check
         run: npx tsc --noEmit
-        continue-on-error: true
+        continue-on-error: true # TypeScript está com ignoreBuildErrors
 
+  # Job 2: Build e testes
   build:
     name: Build da Aplicação
     runs-on: ubuntu-latest
@@ -47,11 +49,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-engines
 
       - name: Build Next.js
         run: yarn build
@@ -70,6 +72,7 @@ jobs:
           fi
           echo "✅ Build gerado com sucesso!"
 
+  # Job 3: Build Docker (opcional, para validar o Dockerfile)
   docker-build:
     name: Validar Dockerfile
     runs-on: ubuntu-latest
@@ -91,6 +94,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # Job 4: Deploy para Dockploy
   deploy:
     name: Deploy para Dockploy
     runs-on: ubuntu-latest
@@ -114,6 +118,7 @@ jobs:
           echo "🚀 Deploy iniciado no Dockploy!"
           echo "📊 Acompanhe em: https://dev.melhorzin.com"
 
+  # Job 5: Comentar no PR (apenas para PRs)
   pr-comment:
     name: Comentar resultado no PR
     runs-on: ubuntu-latest
