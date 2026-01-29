@@ -1,7 +1,7 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
-import { Code2, Rocket, Sparkles, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Download, FileText } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 export function About() {
@@ -30,18 +30,6 @@ export function About() {
 
     return () => observer.disconnect();
   }, []);
-
-  const stats = [
-    { icon: Code2, label: 'Projetos', value: '8+', color: 'text-primary' },
-    {
-      icon: Rocket,
-      label: 'Tecnologias',
-      value: '30+',
-      color: 'text-secondary',
-    },
-    { icon: Sparkles, label: 'Anos de XP', value: '3+', color: 'text-accent' },
-    { icon: Zap, label: 'Café/dia', value: '∞', color: 'text-chart-4' },
-  ];
 
   return (
     <section className='relative px-4 py-32'>
@@ -89,24 +77,40 @@ export function About() {
               </p>
             </div>
 
-            <div className='gap-6 grid grid-cols-2'>
-              {stats.map((stat, i) => (
-                <Card
-                  key={i}
-                  className='group hover:bg-card/80 p-6 hover:scale-105 transition-all duration-300 cursor-pointer glass-effect'
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                >
-                  <stat.icon
-                    className={`w-8 h-8 mb-4 ${stat.color} group-hover:animate-glow`}
-                  />
-                  <div className='mb-2 font-bold text-foreground text-4xl'>
-                    {stat.value}
+            <div className='flex justify-center items-center'>
+              <div className='relative group w-full max-w-sm'>
+                <div className='absolute -inset-0.5 bg-linear-to-r from-primary to-secondary rounded-lg blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200' />
+                <div className='relative p-8 bg-black/50 backdrop-blur-xl border border-white/10 rounded-lg flex flex-col items-center text-center space-y-6'>
+                  <div className='p-3 rounded-full bg-white/5 border border-white/10'>
+                    <FileText className='w-8 h-8 text-primary' />
                   </div>
-                  <div className='text-muted-foreground text-sm'>
-                    {stat.label}
+
+                  <div className='space-y-2'>
+                    <h3 className='text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-white/70'>
+                      Curriculum Vitae
+                    </h3>
+                    <p className='text-muted-foreground text-sm leading-relaxed'>
+                      Baixe meu currículo completo para conhecer minha
+                      experiência, habilidades técnicas e projetos
+                      desenvolvidos.
+                    </p>
                   </div>
-                </Card>
-              ))}
+
+                  <Button
+                    className='w-full group/btn relative overflow-hidden'
+                    size='lg'
+                    asChild
+                  >
+                    <a href='/api/download-cv' download='cv_alisson_sgarbi.pdf'>
+                      <span className='relative z-10 flex items-center justify-center gap-2'>
+                        <Download className='w-4 h-4' />
+                        Baixar CV
+                      </span>
+                      <span className='absolute inset-0 bg-linear-to-r from-primary via-secondary to-primary opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300' />
+                    </a>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
