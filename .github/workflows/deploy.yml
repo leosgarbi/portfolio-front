@@ -1,4 +1,4 @@
-name: CI/CD Pipeline (com Docker opcional)
+name: CI/CD Pipeline
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: # Permite trigger manual
+  workflow_dispatch:
 
 jobs:
-  # Job 1: Validações (Lint opcional + Type check)
+  # Job 1: Validation (Lint + Type Check)
   validate:
-    name: Validações de Código
+    name: Code Validation
     runs-on: ubuntu-latest
 
     steps:
@@ -28,23 +28,21 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --ignore-engines
 
-      - name: Run ESLint (se disponível)
+      - name: Run ESLint
         run: |
           if yarn run --non-interactive eslint --version 2>/dev/null; then
-            echo "✅ ESLint encontrado, executando..."
+            echo "✅ ESLint found, running..."
             yarn lint
           else
-            echo "⚠️ ESLint não configurado, pulando..."
+            echo "⚠️ ESLint not configured, skipping..."
           fi
-        continue-on-error: true
 
-      - name: Type check
+      - name: Type Check
         run: npx tsc --noEmit
-        continue-on-error: true
 
-  # Job 2: Build e testes
+  # Job 2: Build Application
   build:
-    name: Build da Aplicação
+    name: App Build
     runs-on: ubuntu-latest
     needs: validate
 
@@ -66,25 +64,20 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: 1
 
-      - name: Test build artifacts
+      - name: Verify Build Artifacts
         run: |
-          if [ ! -d ".next" ]; then
-            echo "❌ Build falhou: diretório .next não foi criado"
-            exit 1
-          fi
           if [ ! -d ".next/standalone" ]; then
-            echo "❌ Build falhou: standalone não foi gerado"
+            echo "❌ Build failed: standalone directory missing. Ensure 'output: standalone' is in next.config.js/mjs."
             exit 1
           fi
-          echo "✅ Build gerado com sucesso!"
+          echo "✅ Build verification passed!"
 
-  # Job 3: Build Docker (opcional - não bloqueia deploy)
-  docker-build:
-    name: Validar Dockerfile (Opcional)
+  # Job 3: Docker Build Check (Optional but recommended for PRs)
+  docker-check:
+    name: Docker Build Check
     runs-on: ubuntu-latest
     needs: build
-    continue-on-error: true
-
+    # Run on PRs to verify Dockerfile health, even if not pushing to registry
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -92,20 +85,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image
+      - name: Build Docker Image (Test)
         uses: docker/build-push-action@v5
         with:
           context: .
           push: false
-          tags: my-v0-project:test
+          tags: test-image:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # Job 4: Deploy para Dockploy
+  # Job 4: Deploy to Dockploy (On Push to Main only)
   deploy:
-    name: Deploy para Dockploy
+    name: Deploy to Dockploy
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, docker-check]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
@@ -113,14 +106,10 @@ jobs:
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.DOCKPLOY_WEBHOOK_URL }}")
 
-          if [ $response -eq 200 ] || [ $response -eq 201 ]; then
-            echo "✅ Deploy triggered com sucesso! Status: $response"
+          if [ "$response" -eq 200 ] || [ "$response" -eq 201 ]; then
+            echo "✅ Deployment triggered successfully! Status: $response"
+            echo "🚀 Monitoring deployment at: https://dev.melhorzin.com"
           else
-            echo "❌ Falha ao trigger deploy. Status HTTP: $response"
+            echo "❌ Failed to trigger deployment. HTTP Status: $response"
             exit 1
           fi
-
-      - name: Notify deployment started
-        run: |
-          echo "🚀 Deploy iniciado no Dockploy!"
-          echo "📊 Acompanhe em: https://dev.melhorzin.com"
