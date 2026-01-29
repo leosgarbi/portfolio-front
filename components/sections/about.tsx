@@ -57,8 +57,8 @@ export function About() {
           <div className='items-center gap-12 grid md:grid-cols-2 mb-20'>
             <div className='space-y-6'>
               <p className='text-muted-foreground text-lg leading-relaxed'>
-                Desenvolvedor front-end inspirado a criar experiências web que
-                combinam
+                Desenvolvedor front-end contribuindo na criação de experiências
+                web que combinam
                 <span className='font-semibold text-primary'>
                   {' '}
                   design funcional
@@ -73,13 +73,19 @@ export function About() {
 
               <p className='text-muted-foreground text-lg leading-relaxed'>
                 Especializado em React, Next.js, TypeScript. Transformo ideias
-                complexas em interfaces intuitivas e memoráveis.
+                em interfaces intuitivas e memoráveis.
               </p>
 
               <p className='text-muted-foreground text-lg leading-relaxed'>
                 Quando não estou escrevendo código, estou contando histórias
-                através da fotografia e do vídeo, duas formas diferentes de
-                criar experiências.
+                através da{' '}
+                <a
+                  href='/photography'
+                  className='bg-clip-text bg-linear-to-r from-primary via-secondary-foreground to-secondary underline'
+                >
+                  fotografia e do vídeo,
+                </a>{' '}
+                duas formas diferentes de criar experiências.
               </p>
             </div>
 

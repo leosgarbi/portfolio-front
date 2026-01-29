@@ -40,7 +40,8 @@ export function Hero() {
         </div>
 
         <p className='mx-auto mb-12 max-w-2xl text-muted-foreground text-xl md:text-2xl leading-relaxed'>
-          Criando experiências web únicas e interativas com tecnologias modernas
+          Contribuindo na criação de aplicações interativas com tecnologias
+          modernas
         </p>
 
         <div className='flex flex-wrap justify-center gap-4 mb-16'>

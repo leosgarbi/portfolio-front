@@ -1,12 +1,7 @@
-/**
- * Rate Limiter simples em memória
- * Em produção, considere usar Redis para persistência entre deploys
- */
-
-interface RateLimitEntry {
+type RateLimitEntry = {
   count: number;
   resetTime: number;
-}
+};
 
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
