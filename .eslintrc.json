@@ -1,0 +1,87 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "**/__mocks__/**",
+    "**/*.d.ts"
+  ],
+  "extends": ["eslint-config-prettier", "plugin:sonarjs/recommended"],
+  "plugins": ["@nx", "sonarjs"],
+  "overrides": [
+    {
+      "files": "*.json",
+      "parser": "jsonc-eslint-parser",
+      "rules": {}
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
+              }
+            ]
+          }
+        ],
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nx/typescript"],
+      "rules": {
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nx/javascript"],
+      "rules": {
+        "@typescript-eslint/no-extra-semi": "error",
+        "no-extra-semi": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "no-else-return": "warn",
+        "no-empty-function": "warn",
+        "no-unreachable": "warn",
+        "no-constant-condition": "warn",
+        "complexity": ["warn", 30],
+        "max-depth": ["warn", 3],
+        "max-params": ["warn", 8],
+        "no-magic-numbers": [
+          "warn",
+          {
+            "ignore": [
+              0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 50, 60, 70, 80, 90, 100,
+              200, 300, 400, 500, 1000, -1
+            ],
+            "ignoreArrayIndexes": true,
+            "enforceConst": true,
+            "detectObjects": false
+          }
+        ],
+        "default-case": "warn",
+        "eqeqeq": ["warn", "always"],
+        "no-var": "warn",
+        "consistent-return": "warn",
+        "prefer-const": "warn",
+        "sonarjs/no-identical-conditions": "warn",
+        "sonarjs/no-collapsible-if": "warn",
+        "sonarjs/no-duplicated-branches": "warn",
+        "sonarjs/cognitive-complexity": ["warn", 30]
+      }
+    }
+  ]
+}
