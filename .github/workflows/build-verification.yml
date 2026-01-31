@@ -50,10 +50,10 @@ jobs:
       - name: Trigger Dockploy Webhook
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.DOCKPLOY_WEBHOOK_URL }}")
-          if [ "$response" -eq 200 ] || [ "$response" -eq 201 ]; then
-            echo "✅ Deployment triggered successfully! Status: $response"
-            echo "🚀 Monitoring deployment at: https://dev.melhorzin.com"
-          else
-            echo "❌ Failed to trigger deployment. HTTP Status: $response"
-            exit 1
-          fi
+             echo "Received HTTP status: $response"
+             if [ "$response" -eq 200 ] || [ "$response" -eq 201 ]; then
+               echo "✅ Deployment triggered successfully! Status: $response"
+             else
+               echo "❌ Failed to trigger deployment. HTTP Status: $response"
+               exit 1
+             fi
