@@ -1,53 +1,24 @@
-# syntax=docker.io/docker/dockerfile:1
+# Dockerfile
 
-# Stage 1: Dependências
-FROM node:22-alpine AS deps
-RUN apk add --no-cache libc6-compat
+# Stage 1: Builder - for building the Next.js application
+FROM node:20-alpine AS builder
 WORKDIR /app
-
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production --ignore-engines
-
-# Stage 2: Builder
-FROM node:22-alpine AS builder
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --ignore-engines
-
+COPY package.json package-lock.json ./
+RUN npm install
 COPY . .
-RUN mkdir -p public
+RUN npm run build
 
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN yarn build
-
-# Stage 3: Runtime
-FROM node:22-alpine AS runner
+# Stage 2: Runner - for running the production application
+FROM node:20-alpine AS runner
 WORKDIR /app
-
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
-
-# Copiar public apenas se existir
-RUN mkdir -p ./public
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-USER nextjs
-
+# Set environment variable for production
+ENV NODE_ENV production
+# Copy the built application from the builder stage
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/public ./public
+# Expose the port the app runs on (default 3000 for Next.js)
 EXPOSE 3000
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
-
-CMD ["node", "server.js"]
+# Start the production server
+CMD ["npm", "start"]

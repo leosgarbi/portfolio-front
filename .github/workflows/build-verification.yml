@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'yarn'
@@ -39,7 +39,6 @@ jobs:
             exit 1
           fi
           echo "✅ Build verification passed!"
-
   # Job 2: Deploy to Dockploy (On Push to Main only)
   deploy:
     name: Deploy to Dockploy
@@ -51,7 +50,6 @@ jobs:
       - name: Trigger Dockploy Webhook
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.DOCKPLOY_WEBHOOK_URL }}")
-
           if [ "$response" -eq 200 ] || [ "$response" -eq 201 ]; then
             echo "✅ Deployment triggered successfully! Status: $response"
             echo "🚀 Monitoring deployment at: https://dev.melhorzin.com"

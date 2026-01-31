@@ -1,11 +1,21 @@
 services:
-  app:
+  frontend:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: portifolio-front
-    ports:
-      - "3000:3000"
+      target: runner
+    restart: always
     environment:
-      - NODE_ENV=production
-    restart: unless-stopped
+      NODE_ENV: production
+    networks:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-portfolio.rule=Host(`leosgarbi.com.br`)"
+      - "traefik.http.routers.frontend-portfolio.entrypoints=websecure"
+      - "traefik.http.routers.frontend-portfolio.tls=true"
+      - "traefik.http.routers.frontend-portfolio.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend-portfolio.loadbalancer.server.port=3000"
+
+networks:
+  dokploy-network:
+    external: true
