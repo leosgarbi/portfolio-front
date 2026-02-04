@@ -1,5 +1,3 @@
-# Dockerfile
-
 # Stage 1: Builder - for building the Next.js application
 FROM node:20-alpine AS builder
 WORKDIR /app
