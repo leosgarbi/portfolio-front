@@ -132,7 +132,7 @@ export function Contact() {
             {/* CONTATOS */}
             <div className='space-y-6'>
               <a
-                href='mailto:leosgarbi92@gmail.com'
+                href='mailto:contato@leosgarbi.com.br'
                 target='_blank'
                 className='group flex items-start gap-4 cursor-pointer'
               >
@@ -143,7 +143,7 @@ export function Contact() {
                   <h3 className='mb-1 font-semibold group-hover:text-primary text-lg transition-colors'>
                     Email
                   </h3>
-                  <p className='text-muted-foreground'>leosgarbi92@gmail.com</p>
+                  <p className='text-muted-foreground'>contato@leosgarbi.com.br</p>
                 </div>
               </a>
 
