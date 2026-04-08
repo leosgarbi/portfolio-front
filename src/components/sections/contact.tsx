@@ -260,10 +260,6 @@ export function Contact() {
             </form>
           </div>
         </Card>
-
-        <p className='mt-12 text-muted-foreground text-center'>
-          © 2026 Front-End Developer. Feito com paixão e muito café
-        </p>
       </div>
     </section>
   );

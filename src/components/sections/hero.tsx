@@ -5,7 +5,7 @@ import { ArrowDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 }); 
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -15,7 +15,8 @@ export function Hero() {
       });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove'
+      , handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
