@@ -1,81 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { galleries } from '@/data/gallery-data';
 import { X, ZoomIn } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
-type GalleryImage = {
-  id: string;
-  src: string;
-  alt: string;
-};
-
-type Gallery = {
-  id: string;
-  title: string;
-  description: string;
-  images: GalleryImage[];
-};
-
-const galleries: Gallery[] = [
-  {
-    id: 'portrait',
-    title: 'Retratos',
-    description: 'Capturando a essência humana',
-    images: [
-      {
-        id: 'portrait-1',
-        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/554992608_25032804689682255_9177703638228419998_n.jpg',
-        alt: 'Retrato feminino em luz natural',
-      },
-      {
-        id: 'portrait-2',
-        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/catedral_cwb.jpg',
-        alt: 'Retrato masculino em estúdio',
-      },
-      {
-        id: 'portrait-3',
-        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/portrait_ar.jpg',
-        alt: 'Retrato em preto e branco',
-      },
-    ],
-  },
-  {
-    id: 'landscape',
-    title: 'Paisagens',
-    description: 'A beleza natural em pixels',
-    images: [
-      {
-        id: 'landscape-1',
-        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/raining_cwb.jpg',
-        alt: 'Montanhas ao pôr do sol',
-      },
-      {
-        id: 'landscape-2',
-        src: 'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/sun_portrait.jpg',
-        alt: 'Lago com reflexo',
-      },
-    ],
-  },
-  {
-    id: 'urban',
-    title: 'Urbano',
-    description: 'A vida nas cidades',
-    images: [
-      {
-        id: 'urban-1',
-        src: 'https://placehold.co/600x400?text=Urban+1',
-        alt: 'Rua movimentada à noite',
-      },
-      {
-        id: 'urban-2',
-        src: 'https://placehold.co/600x400?text=Urban+2',
-        alt: 'Arquitetura moderna',
-      },
-    ],
-  },
-];
 
 export function GalleryGrid() {
   const [activeGallery, setActiveGallery] = useState<string>('portrait');

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const fileUrl =
-      'https://pub-7f10ef95a92d47ea810f6915e413bdbf.r2.dev/cv_alisson_sgarbi.pdf';
+      'https://r2.leosgarbi.com.br/cv_alisson_sgarbi.pdf';
 
     const response = await fetch(fileUrl);
 
