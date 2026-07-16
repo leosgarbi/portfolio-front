@@ -11,6 +11,14 @@ jobs:
       - name: Trigger Dokploy webhook
         env:
           DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+        shell: bash
         run: |
+          set -euo pipefail
           echo "Triggering Dokploy redeploy..."
-          curl -sSf -X POST "$DOKPLOY_WEBHOOK_URL"
+          # remove possible CR/LF or surrounding whitespace from secret
+          url="$(echo -n "$DOKPLOY_WEBHOOK_URL" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          if [[ -z "$url" ]]; then
+            echo "DOKPLOY_WEBHOOK_URL is empty or invalid" >&2
+            exit 1
+          fi
+          curl -sS -X POST "$url"
