@@ -1,7 +1,8 @@
 FROM node:18 AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+# Use --legacy-peer-deps to avoid peer dependency install failures in CI
+RUN npm ci --legacy-peer-deps
 COPY . .
 RUN npm run build
 
