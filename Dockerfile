@@ -1,12 +1,14 @@
-FROM node:18 AS builder
+FROM node:20 AS builder
 WORKDIR /app
 COPY package*.json ./
 # Use --legacy-peer-deps to avoid peer dependency install failures in CI
-RUN npm ci --legacy-peer-deps
+# Use `npm install` here to allow builds when lockfile is out of sync.
+# Long-term: run `npm install` locally and commit updated package-lock.json, then revert to `npm ci`.
+RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm run build
 
-FROM node:18-alpine AS runner
+FROM node:18-alpine AS production
 WORKDIR /app
 ENV NODE_ENV=production
 
