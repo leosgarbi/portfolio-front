@@ -29,8 +29,6 @@ async function verifyTurnstileToken(token: string): Promise<boolean> {
   }
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 // Helper para extrair IP do request
 function getClientIp(req: Request): string {
   const forwarded = req.headers.get('x-forwarded-for');
@@ -99,6 +97,8 @@ export async function POST(req: Request) {
     const sanitizedName = sanitizeString(name);
     const sanitizedMessage = sanitizeString(message);
     const sanitizedEmail = email.toLowerCase().trim();
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     await resend.emails.send({
       from: 'Contato <contato@leosgarbi.com.br>',
