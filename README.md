@@ -1,3 +1,28 @@
+# AI Agent Instructions
+## CI / Dokploy
+
+Como disparar redeploy no Dokploy via GitHub Actions ou publicar imagem Docker:
+
+- Para acionamento simples via webhook (já adicionado): configure o segredo `DOKPLOY_WEBHOOK_URL` no repositório com o valor do webhook do Dokploy. O workflow [`.github/workflows/deploy-dokploy.yml`](.github/workflows/deploy-dokploy.yml#L1) faz um `POST` nesse URL em cada push na `main`.
+
+- Para publicar imagem Docker e fazer deploy por imagem (opcional): há um workflow de exemplo que faz build e push para o GitHub Container Registry (GHCR). Ele usa `GITHUB_TOKEN` com permissões de `packages: write` — não precisa criar secrets extras para GHCR quando o repositório pertence ao seu usuário/organização.
+
+Passos rápidos:
+
+1. Adicionar segredo `DOKPLOY_WEBHOOK_URL` com o webhook do Dokploy.
+2. (Opcional) Habilitar `packages: write` nas permissões de `GITHUB_TOKEN` do workflow se for usar GHCR. No workflow já incluí a permissão necessária.
+3. Fazer push para `main` — o workflow correspondente será executado.
+
+Testes locais:
+
+```bash
+# build localmente
+docker build -t portfolio-front:local .
+
+# run
+docker run --rm -p 3000:3000 portfolio-front:local
+```
+
 # Portfolio Front
 
 ## Descrição

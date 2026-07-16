@@ -1,0 +1,16 @@
+name: Trigger Dokploy Redeploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Dokploy webhook
+        env:
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+        run: |
+          echo "Triggering Dokploy redeploy..."
+          curl -sSf -X POST "$DOKPLOY_WEBHOOK_URL"
