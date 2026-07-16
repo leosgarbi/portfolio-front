@@ -3,18 +3,17 @@ import NoiseBackground from '@/components/noise-background';
 import { About } from '@/components/sections/about';
 import { Contact } from '@/components/sections/contact';
 import { Hero } from '@/components/sections/hero';
-import { Projects } from '@/components/sections/projects';
 import { Skills } from '@/components/sections/skills';
 
 export default function Page() {
   return (
     <main className='relative min-h-screen overflow-hidden'>
-      <Navigation />
       <NoiseBackground />
+      <Navigation />
       <Hero />
       <About />
       <Skills />
-      <Projects />
+      {/* <Projects /> */}
       <Contact />
     </main>
   );

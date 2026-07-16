@@ -16,7 +16,7 @@ export function Skills() {
 
     {
       title: 'Infraestrutura & Integração',
-      skills: ['Node.js', 'AWS', 'MongoDB', 'Git', 'Docker', 'Virtual Machine'],
+      skills: ['Node.js', 'AWS', 'MongoDB', 'Git', 'Docker', 'Virtual Machine', 'CI/CD'],
       color: 'from-accent to-accent/50',
     },
     {
